@@ -1,10 +1,10 @@
 {
   "mainAssemblyName": "EventMgr",
   "resources": {
-    "hash": "sha256-Y+aqso60RrGBEO9EDfX2HhwvqfMEmkF/2m3vY92frTs=",
+    "hash": "sha256-NlygZO1WKU4mXGu4j2XCqhRLbzwy0RouSgdgGQ1FgPI=",
     "fingerprinting": {
       "Blazored.LocalStorage.12n6dz54qr.wasm": "Blazored.LocalStorage.wasm",
-      "EventMgr.9v7rz53cyz.wasm": "EventMgr.wasm",
+      "EventMgr.ksikb30369.wasm": "EventMgr.wasm",
       "Microsoft.AspNetCore.Components.Forms.vq9g6cpll0.wasm": "Microsoft.AspNetCore.Components.Forms.wasm",
       "Microsoft.AspNetCore.Components.4tgbhqesy6.wasm": "Microsoft.AspNetCore.Components.wasm",
       "Microsoft.AspNetCore.Components.Web.yeqj1fcdmx.wasm": "Microsoft.AspNetCore.Components.Web.wasm",
@@ -77,7 +77,7 @@
     },
     "assembly": {
       "Blazored.LocalStorage.12n6dz54qr.wasm": "sha256-OaMAAd5n7ORfyur5e3QIyEVKJ76MKIvwbg7/icnnYcU=",
-      "EventMgr.9v7rz53cyz.wasm": "sha256-azhQhM7/OUr2TgzrrkrtnlVoUIaeS+SAYHE0XMp8IJ4=",
+      "EventMgr.ksikb30369.wasm": "sha256-3MwyFXLTPYzHu1rUE2mxE2gCy3LQHGln3O0i4IzFmIM=",
       "Microsoft.AspNetCore.Components.Forms.vq9g6cpll0.wasm": "sha256-V9ttpAY74fNEjoJEKbC6wvqj1BjRfApaJtUGDvTgrMY=",
       "Microsoft.AspNetCore.Components.4tgbhqesy6.wasm": "sha256-2GJc3/E4B2s45IDoBsM7rPa7GFC8B/4i42g+brZpImI=",
       "Microsoft.AspNetCore.Components.Web.yeqj1fcdmx.wasm": "sha256-eklfppnLc49r4rGBYKCc34O3i0MHOQoXv9SmYkvkS2c=",
