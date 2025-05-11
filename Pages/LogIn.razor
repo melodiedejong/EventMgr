@@ -1,0 +1,36 @@
+@page "/login"
+@using EventMgr.Services;
+@using System.ComponentModel.DataAnnotations
+@inject SessionState SessionState
+@inject NavigationManager NavigationManager
+
+
+<h3>Login</h3>
+
+<EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label for="userName" class="form-label">User Name</label>
+        <InputText id="userName" class="form-control" @bind-Value="loginModel.UserName" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Log In</button>
+</EditForm>
+
+@code {
+    private LoginModel loginModel = new();
+
+    private void HandleLogin()
+    {
+        SessionState.LogIn(loginModel.UserName);
+        NavigationManager.NavigateTo("/");
+    }
+
+    private class LoginModel
+    {
+        [Required(ErrorMessage = "User name is required.")]
+        public string UserName { get; set; } = string.Empty;
+    }
+}

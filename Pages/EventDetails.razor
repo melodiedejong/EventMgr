@@ -1,0 +1,52 @@
+@page "/eventdetails/{eventname}"
+@using EventMgr.Models
+@using EventMgr.Services
+@inject EventService EventService
+
+@if (eventDetails == null && !isLoading)
+{
+    <p class="text-danger">The event with the name "@eventname" could not be found.</p>
+    <a href="/" class="btn btn-secondary">Back to Events</a>
+}
+else if (isLoading)
+{
+     <p>Loading event details...</p>
+}
+else
+{
+    <h3>Event Details</h3>
+
+    <h1>@eventDetails?.Name</h1>
+    <p><strong>Location:</strong> @eventDetails?.Location</p>
+    <p><strong>Date/Time:</strong> @eventDetails?.StartDate.ToString("f")</p>
+    <p><strong>Description:</strong> @eventDetails?.Description</p>
+    <p><strong>Number Attending:</strong>@eventDetails?.Attendees.Count</p>
+    <a href="/eventregister/@eventDetails?.Name" class="btn btn-secondary">Register for Event</a>
+    <a href="/" class="btn btn-secondary">View All Events</a>
+}
+
+@code {
+    [Parameter]
+    public string eventname { get; set; }
+
+    private EventItem? eventDetails;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            eventDetails = await EventService.GetEventByNameAsync(eventname);
+        }
+        catch (Exception ex)
+        {
+            // Handle the exception (e.g., log it, show a message, etc.)
+            Console.WriteLine($"Error fetching event details: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}
+

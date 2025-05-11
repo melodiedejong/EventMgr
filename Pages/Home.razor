@@ -1,0 +1,50 @@
+﻿@page "/"
+@using EventMgr.Services;
+@inject EventService EventService
+
+<h3>EventEase Events</h3>
+
+@if (eventList == null)
+{
+    <p>Loading events...</p>
+}
+else if (!eventList.Any())
+{
+    <p>No events available.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Date</th>
+                <th>Details</th>
+                <th>Register for Event</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var eventItem in eventList)
+            {
+                <tr>
+                    <td>@eventItem.Name</td>
+                    <td>@eventItem.Location</td>
+                    <td>@eventItem.StartDate.ToShortDateString()</td>
+                    <td><a href="/eventdetails/@eventItem.Name" class="btn btn-secondary">Details</a></td>
+                     <td><a href="/eventregister/@eventItem.Name" class="btn btn-secondary">Register</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+   <a href="/eventform" class="btn btn-secondary">Add Event</a>
+@code {
+    private List<EventMgr.Models.EventItem> eventList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        eventList = await EventService.GetEventAsync();
+    }
+}

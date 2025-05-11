@@ -1,0 +1,52 @@
+@page "/eventform"
+@using EventMgr.Models
+@using EventMgr.Services
+@inject EventService EventService
+
+<h3>Event Form</h3>
+
+<EditForm Model="@eventItem" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+
+    <div>
+        <label for="name" class="form-label">Event Name</label>
+        <InputText id="name" class="form-control" @bind-Value="eventItem.Name" required />
+    </div>
+
+    <div>
+        <label for="location" class="form-label">Event Location</label>
+        <InputText id="location" class="form-control" @bind-Value="eventItem.Location" required />
+    </div>
+
+    <div>
+        <label for="date" class="form-label">Event Date</label>
+        <InputDate id="date" class="form-control" @bind-Value="eventItem.StartDate" required />
+    </div>
+
+    <div>
+        <label for="description" class="form-label">Event Description</label>
+        <InputTextArea id="description" class="form-control" @bind-Value="eventItem.Description" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Save Event</button>
+    <a href="/" class="btn btn-secondary">View Events</a>
+
+ </EditForm>
+
+@if (isSubmitted)
+{
+    <p>Thank you!</p>
+}
+
+@code {
+    private EventItem eventItem = new();
+    private bool isSubmitted = false;
+
+    private async Task HandleValidSubmit()
+    {
+        await EventService.AddEventAsync(eventItem);
+        isSubmitted = true;
+    
+    }
+}

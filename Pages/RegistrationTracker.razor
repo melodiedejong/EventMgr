@@ -1,0 +1,63 @@
+@page "/registration-tracker"
+@using EventMgr.Models
+@using EventMgr.Services
+@inject EventService EventService
+
+<h3>Registration Tracker</h3>
+
+@if (events == null)
+{
+    <p>Loading event registrations...</p>
+}
+else if (!events.Any())
+{
+    <p>No events have been registered yet.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Event Name</th>
+                <th>Location</th>
+                <th>Date</th>
+                <th>Attendees</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var eventItem in events)
+            {
+                <tr>
+                    <td>@eventItem.Name</td>
+                    <td>@eventItem.Location</td>
+                    <td>@eventItem.StartDate.ToShortDateString()</td>
+                    <td>
+                        @if (eventItem.Attendees.Any())
+                        {
+                            <ul>
+                                @foreach (var attendee in eventItem.Attendees)
+                                {
+                                    <li>@attendee.FirstName @attendee.LastName (@attendee.Email)</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <span>No attendees yet</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<a href="/" class="btn btn-secondary">Back to Home</a>
+
+@code {
+    private List<EventItem>? events;
+
+    protected override async Task OnInitializedAsync()
+    {
+        events = await EventService.GetEventAsync();
+    }
+}

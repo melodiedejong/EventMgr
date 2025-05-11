@@ -1,0 +1,133 @@
+@page "/eventregister/{eventname}"
+@using EventMgr.Models
+@using EventMgr.Services;
+@using System.ComponentModel.DataAnnotations
+@inject EventService EventService
+@inject SessionState SessionState
+
+
+<h3>Register for Event</h3>
+
+@if (!SessionState.IsLoggedIn)
+{
+    <p class="text-danger">You must log in to register for events.</p>
+    <a href="/" class="btn btn-secondary">Go to Home</a>
+}
+else if (eventItem == null && !isLoading)
+{
+    <p class="text-danger">The event with the name "@eventname" could not be found.</p>
+    <a href="/" class="btn btn-secondary">Back to Events</a>
+}
+else if (isLoading)
+{
+    <p>Loading event details...</p>
+}
+else
+{
+    <p><strong>Welcome, @SessionState.UserName!</strong></p>
+    <p><strong>Event:</strong> @eventItem.Name</p>
+    <p><strong>Location:</strong> @eventItem.Location</p>
+    <p><strong>Date:</strong> @eventItem.StartDate.ToString("f")</p>
+
+    <EditForm Model="@registration" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div>
+            <label for="firstName" class="form-label">First Name</label>
+            <InputText id="firstName" class="form-control" @bind-Value="registration.FirstName" required />
+        </div>
+
+        <div>
+            <label for="lastName" class="form-label">Last Name</label>
+            <InputText id="lastName" class="form-control" @bind-Value="registration.LastName" required />
+        </div>
+
+        <div>
+            <label for="email" class="form-label">Email Address</label>
+            <InputText id="email" class="form-control" @bind-Value="registration.Email" type="email" required />
+        </div>
+
+        <div>
+            <label for="phone" class="form-label">Phone Number</label>
+            <InputText id="phone" class="form-control" @bind-Value="registration.Phone" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+         <a href="/eventdetails/@eventItem.Name" class="btn btn-secondary">Details</a>
+    </EditForm>
+
+    @if (errorMessage != null)
+    {
+        <p class="text-damger">@errorMessage</p>
+    }
+   
+}
+
+@code {
+    [Parameter]
+    public string eventname { get; set; }
+
+    private EventItem? eventItem;
+    private RegistrationModel registration = new();
+    private string? errorMessage;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+         try
+        {
+            eventItem = await EventService.GetEventByNameAsync(eventname);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception if needed
+            Console.WriteLine($"Error fetching event details: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+   }
+
+private async Task HandleValidSubmit()
+{
+    if (eventItem != null)
+    {
+        var newAttendee = new Attendee
+        {
+            FirstName = registration.FirstName,
+            LastName = registration.LastName,
+            Email = registration.Email,
+            Phone = registration.Phone
+        };
+
+        // Check for duplicate attendees based on email or full name
+        if (eventItem.Attendees.Any(a => a.Email == newAttendee.Email))
+        {
+            errorMessage = "This attendee is already registered for the event.";
+            return;
+        }
+
+        eventItem.Attendees.Add(newAttendee);
+        await EventService.UpdateEventByNameAsync(eventItem);
+        errorMessage = null;
+    }
+}
+
+    private class RegistrationModel
+    {
+        [Required(ErrorMessage = "First name is required.")]
+        public string FirstName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Last name is required.")]
+        public string LastName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Email address is required.")]
+        [EmailAddress(ErrorMessage = "Invalid email address.")]
+        public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Phone number is required.")]
+        public string Phone { get; set; } = string.Empty;
+    }
+}
